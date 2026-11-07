@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>KickerKids - Vorschul-Fußballspaß</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* iOS Safe-Area & Touch-Optimierung */
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .bouncy:active {
+      transform: scale(0.95);
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-800 flex justify-center min-h-screen">
+
+  <!-- Mobile Container (iPhone-Ansicht) -->
+  <div class="w-full max-w-md bg-emerald-600 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+    
+    <!-- Status-Leiste & Bälle-Konto -->
+    <header class="p-4 flex justify-between items-center bg-emerald-700/80 backdrop-blur-md text-white border-b border-emerald-500">
+      <div class="flex items-center space-x-2">
+        <span class="text-2xl">⚽</span>
+        <span id="ball-count" class="font-extrabold text-xl text-yellow-300">50</span>
+        <span class="text-xs uppercase font-bold tracking-wider text-emerald-200">Bälle</span>
+      </div>
+      <button onclick="openParentGate()" class="bg-emerald-800/80 hover:bg-emerald-800 text-xs px-3 py-1.5 rounded-full border border-emerald-400/50 flex items-center gap-1">
+        🔒 <span>Eltern</span>
+      </button>
+    </header>
+
+    <!-- Hauptbereich (Screen-Wechsler) -->
+    <main id="app-content" class="flex-1 p-4 flex flex-col items-center justify-center text-center">
+      
+      <!-- Screen 1: Menü & Spielauswahl -->
+      <div id="screen-menu" class="w-full flex flex-col items-center space-y-4">
+        <div class="bg-white/20 p-4 rounded-full text-5xl mb-2 animate-bounce">
+          🏆
+        </div>
+        <h1 class="text-3xl font-black text-white tracking-wide drop-shadow">KICKERKIDS</h1>
+        <p class="text-emerald-100 text-sm font-medium">Lernen, Tore schießen & Trikots sammeln!</p>
+
+        <!-- Kacheln der Minispiele -->
+        <div class="grid grid-cols-2 gap-3 w-full mt-4">
+          <button onclick="startCountingGame()" class="bouncy bg-white p-4 rounded-2xl shadow-lg border-b-4 border-emerald-200 flex flex-col items-center">
+            <span class="text-4xl mb-1">🔢</span>
+            <span class="font-bold text-slate-800 text-sm">Bälle Zählen</span>
+          </button>
+          <button onclick="startLetterGame()" class="bouncy bg-white p-4 rounded-2xl shadow-lg border-b-4 border-emerald-200 flex flex-col items-center">
+            <span class="text-4xl mb-1">🅰️</span>
+            <span class="font-bold text-slate-800 text-sm">Buchstaben</span>
+          </button>
+          <button onclick="openLockerRoom()" class="bouncy bg-yellow-400 p-4 rounded-2xl shadow-lg border-b-4 border-yellow-500 flex flex-col items-center">
+            <span class="text-4xl mb-1">👕</span>
+            <span class="font-bold text-slate-900 text-sm">Kabine & Shop</span>
+          </button>
+          <button onclick="watchVideoAd()" class="bouncy bg-indigo-500 text-white p-4 rounded-2xl shadow-lg border-b-4 border-indigo-700 flex flex-col items-center">
+            <span class="text-4xl mb-1">📺</span>
+            <span class="font-bold text-sm">+25 Bälle</span>
+            <span class="text-[10px] text-indigo-200">Video schauen</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Screen 2: Spiel 1 (Zählen) -->
+      <div id="screen-game" class="w-full hidden flex-col items-center space-y-4">
+        <h2 class="text-xl font-black text-white">Wie viele Bälle siehst du?</h2>
+        
+        <!-- Tornetz mit Bällen -->
+        <div id="goal-area" class="w-full h-44 bg-white/90 rounded-2xl border-4 border-white shadow-inner flex flex-wrap items-center justify-center p-3 gap-3">
+          <!-- Bälle werden per JS generiert -->
+        </div>
+
+        <!-- Antwort-Buttons -->
+        <div id="answer-buttons" class="grid grid-cols-3 gap-3 w-full pt-2"></div>
+      </div>
+
+      <!-- Screen 3: Die Umkleidekabine (Locker Room) -->
+      <div id="screen-locker" class="w-full hidden flex-col items-center space-y-3">
+        <h2 class="text-2xl font-black text-white">Deine Kicker-Kabine</h2>
+        <div id="avatar-preview" class="w-28 h-28 bg-white/20 rounded-full flex items-center justify-center text-6xl shadow-inner border-2 border-white/40">
+          👦
+        </div>
+        <p id="current-jersey-text" class="text-white text-sm font-semibold">Trikot: Rot-Weiß (Standard)</p>
+
+        <!-- Shop-Liste -->
+        <div class="w-full bg-white/95 rounded-2xl p-3 shadow-lg space-y-2 text-left">
+          <div class="flex justify-between items-center p-2 rounded-xl bg-slate-100">
+            <span class="text-sm font-bold">⭐ Goldenes Meister-Trikot</span>
+            <button onclick="buyItem('jersey_gold', 60)" class="bouncy bg-yellow-400 text-slate-900 text-xs px-3 py-1.5 rounded-lg font-black shadow">
+              60 ⚽
+            </button>
+          </div>
+          <div class="flex justify-between items-center p-2 rounded-xl bg-slate-100">
+            <span class="text-sm font-bold">🔥 Feuer-Schuhe</span>
+            <button onclick="buyItem('shoes_fire', 40)" class="bouncy bg-yellow-400 text-slate-900 text-xs px-3 py-1.5 rounded-lg font-black shadow">
+              40 ⚽
+            </button>
+          </div>
+        </div>
+        <button onclick="showMenu()" class="bouncy bg-slate-800 text-white font-bold px-6 py-2 rounded-full text-sm">Zurück zum Menü</button>
+      </div>
+
+    </main>
+
+    <!-- Eltern-Gate Modal (Kindersicherung) -->
+    <div id="parent-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl space-y-4">
+        <h3 class="font-extrabold text-slate-900 text-lg">Nur für Erwachsene</h3>
+        <p class="text-xs text-slate-500">Löse die Rechenaufgabe, um den Elternbereich zu öffnen:</p>
+        <div id="parent-math" class="text-2xl font-black text-emerald-600">3 + 4 = ?</div>
+        <input id="parent-input" type="number" class="w-24 text-center font-bold text-xl border-2 border-slate-300 rounded-xl py-1 mx-auto block" placeholder="?">
+        <div class="flex gap-2 justify-center">
+          <button onclick="closeParentGate()" class="bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs">Abbrechen</button>
+          <button onclick="checkParentGate()" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">Bestätigen</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // State-Management
+    let balls = parseInt(localStorage.getItem('kk_balls') || '50');
+    let mathTarget = 7;
+    let targetCount = 3;
+
+    function updateBalls(amount) {
+      balls += amount;
+      if (balls < 0) balls = 0;
+      localStorage.setItem('kk_balls', balls);
+      document.getElementById('ball-count').innerText = balls;
+    }
+
+    // Video-Ad Belohnung (Simulation)
+    function watchVideoAd() {
+      alert("📺 Kurzes Werbevideo wird abgespielt... (Simulation)");
+      setTimeout(() => {
+        updateBalls(25);
+        alert("🎉 Bravo! Du hast 25 Goldene Bälle erhalten!");
+      }, 600);
+    }
+
+    // Navigation
+    function showMenu() {
+      document.getElementById('screen-menu').classList.remove('hidden');
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-locker').classList.add('hidden');
+    }
+
+    function openLockerRoom() {
+      document.getElementById('screen-menu').classList.add('hidden');
+      document.getElementById('screen-locker').classList.remove('hidden');
+    }
+
+    function buyItem(item, price) {
+      if (balls >= price) {
+        updateBalls(-price);
+        alert("🎉 Gekauft und angezogen!");
+      } else {
+        alert("⚽ Du brauchst mehr Bälle! Spiele ein Spiel oder schau ein Video.");
+      }
+    }
+
+    // Zählspiel
+    function startCountingGame() {
+      document.getElementById('screen-menu').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+      
+      targetCount = Math.floor(Math.random() * 4) + 1; // 1 bis 4 Bälle
+      const goal = document.getElementById('goal-area');
+      goal.innerHTML = '';
+      for (let i = 0; i < targetCount; i++) {
+        goal.innerHTML += '<span class="text-4xl animate-bounce">⚽</span>';
+      }
+
+      const answers = document.getElementById('answer-buttons');
+      answers.innerHTML = '';
+      [1, 2, 3, 4].forEach(num => {
+        answers.innerHTML += `
+          <button onclick="checkAnswer(${num})" class="bouncy bg-white text-emerald-800 font-black text-2xl py-3 rounded-2xl shadow-md border-b-4 border-slate-200">
+            ${num}
+          </button>
+        `;
+      });
+    }
+
+    function checkAnswer(chosen) {
+      if (chosen === targetCount) {
+        updateBalls(3);
+        alert("⚽ TOOOOOR! Richtig gezählt! (+3 Bälle)");
+        showMenu();
+      } else {
+        alert("Knapp daneben! Versuch es noch einmal.");
+      }
+    }
+
+    function startLetterGame() {
+      alert("🅰️ Buchstaben-Pass startet demnächst!");
+    }
+
+    // Eltern-Gate Logik
+    function openParentGate() {
+      const a = Math.floor(Math.random() * 5) + 2;
+      const b = Math.floor(Math.random() * 5) + 1;
+      mathTarget = a + b;
+      document.getElementById('parent-math').innerText = `${a} + ${b} = ?`;
+      document.getElementById('parent-input').value = '';
+      document.getElementById('parent-modal').classList.remove('hidden');
+      document.getElementById('parent-modal').classList.add('flex');
+    }
+
+    function closeParentGate() {
+      document.getElementById('parent-modal').classList.add('hidden');
+      document.getElementById('parent-modal').classList.remove('flex');
+    }
+
+    function checkParentGate() {
+      const val = parseInt(document.getElementById('parent-input').value);
+      if (val === mathTarget) {
+        closeParentGate();
+        alert("🔓 Elternbereich freigeschaltet: Hier wird später das 3,99 € Abo und die Einstellungen verwaltet.");
+      } else {
+        alert("Falsche Antwort! Zugriff verwehrt.");
+        closeParentGate();
+      }
+    }
+  </script>
+</body>
+</html>
