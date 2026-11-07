@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>KickerKids - Vorschul-Fußballspaß</title>
+  <title>KickerKids - Pädagogischer Vorschul-Fußballspaß</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -13,208 +13,293 @@
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       user-select: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .bouncy:active {
       transform: scale(0.94);
+    }
+    .grass-bg {
+      background: radial-gradient(circle at center, #2e7d32 0%, #1b5e20 100%);
+    }
+    .chalk-line {
+      border: 2px dashed rgba(255, 255, 255, 0.4);
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-800 flex justify-center min-h-screen">
 
-  <div class="w-full max-w-md bg-emerald-600 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+  <div class="w-full max-w-md bg-slate-900 flex flex-col justify-between shadow-2xl relative overflow-hidden border-x border-slate-800">
     
-    <!-- Header -->
-    <header class="p-4 flex justify-between items-center bg-emerald-700/90 backdrop-blur-md text-white border-b border-emerald-500 shadow z-10">
-      <div class="flex items-center space-x-2">
-        <span class="text-2xl animate-bounce">⚽</span>
-        <span id="ball-count" class="font-black text-2xl text-yellow-300">50</span>
-        <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-200">Bälle</span>
+    <!-- Top-Bar: Währung, Lern-Level & Eltern-Schutz -->
+    <header class="p-3.5 flex justify-between items-center bg-slate-900/95 backdrop-blur-md text-white border-b border-emerald-500/30 shadow-md z-20">
+      <button id="nav-back-btn" onclick="showScreen('screen-path')" class="w-9 h-9 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center font-bold text-yellow-400 border border-slate-700 shadow hidden bouncy">
+        ❮
+      </button>
+
+      <div class="flex items-center space-x-2 bg-emerald-950/80 border border-emerald-500/40 px-3 py-1 rounded-full shadow-inner">
+        <span class="text-xl">⚽</span>
+        <span id="ball-count" class="font-black text-lg text-yellow-300">50</span>
       </div>
+
+      <!-- Aktuelle Bildungs-Stufe -->
+      <div class="flex items-center gap-1.5 bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-full">
+        <span class="text-xs">⭐</span>
+        <span class="text-[10px] font-black text-emerald-400 uppercase">Stufe <span id="current-tier-badge">1</span></span>
+      </div>
+
       <div class="flex items-center gap-2">
-        <span id="vip-badge" class="hidden bg-yellow-400 text-slate-950 font-black text-[10px] px-2 py-0.5 rounded-full uppercase">VIP PRO</span>
-        <button onclick="openParentGate()" class="bg-emerald-800/80 hover:bg-emerald-900 text-xs px-3 py-1.5 rounded-full border border-emerald-400/50 flex items-center gap-1 font-bold">
+        <button onclick="openParentGate()" class="bg-slate-800 hover:bg-slate-700 text-xs px-3 py-1.5 rounded-full border border-slate-600 flex items-center gap-1 font-bold shadow bouncy">
           🔒 <span>Eltern</span>
         </button>
       </div>
     </header>
 
     <!-- Hauptbereich -->
-    <main id="app-content" class="flex-1 p-4 flex flex-col items-center justify-center text-center overflow-y-auto">
-      
-      <!-- Screen 1: Menü & Übersicht -->
-      <div id="screen-menu" class="w-full flex flex-col items-center space-y-3">
-        <div class="bg-white/20 p-3 rounded-full text-5xl mb-1 shadow-inner">🏆</div>
-        <h1 class="text-3xl font-black text-white tracking-wide drop-shadow">KICKERKIDS</h1>
-        <p class="text-emerald-100 text-xs font-semibold">Tore schießen, schlau werden & Trikots sammeln!</p>
+    <main id="app-content" class="flex-1 relative overflow-y-auto no-scrollbar">
 
-        <!-- Die 4 Lernspiele Kacheln -->
-        <div class="grid grid-cols-2 gap-3 w-full pt-2">
-          
-          <!-- Spiel 1: Zählen -->
-          <button onclick="startCountingGame()" class="bouncy bg-white p-3.5 rounded-2xl shadow-lg border-b-4 border-emerald-200 flex flex-col items-center">
-            <span class="text-3xl mb-1">🔢</span>
-            <span class="font-extrabold text-slate-800 text-sm">Bälle Zählen</span>
-            <span class="text-[10px] text-slate-400 font-bold">Mengen erfassen</span>
-          </button>
-          
-          <!-- Spiel 2: Buchstaben -->
-          <button onclick="startLetterGame()" class="bouncy bg-white p-3.5 rounded-2xl shadow-lg border-b-4 border-emerald-200 flex flex-col items-center">
-            <span class="text-3xl mb-1">🅰️</span>
-            <span class="font-extrabold text-slate-800 text-sm">Buchstaben</span>
-            <span class="text-[10px] text-slate-400 font-bold">Anlaute hören</span>
-          </button>
-
-          <!-- Spiel 3: Farben & Trikots -->
-          <button onclick="startColorGame()" class="bouncy bg-white p-3.5 rounded-2xl shadow-lg border-b-4 border-emerald-200 flex flex-col items-center">
-            <span class="text-3xl mb-1">🎨</span>
-            <span class="font-extrabold text-slate-800 text-sm">Trikot-Farben</span>
-            <span class="text-[10px] text-slate-400 font-bold">Farben zuordnen</span>
-          </button>
-
-          <!-- Spiel 4: Stadion-Sounds -->
-          <button onclick="startSoundGame()" class="bouncy bg-white p-3.5 rounded-2xl shadow-lg border-b-4 border-emerald-200 flex flex-col items-center">
-            <span class="text-3xl mb-1">📢</span>
-            <span class="font-extrabold text-slate-800 text-sm">Stadion-Sounds</span>
-            <span class="text-[10px] text-slate-400 font-bold">Geräusche raten</span>
-          </button>
-
+      <!-- ================= 1. SPIELER-PFAD MIT AUTOMATISCHEM FORTSCHRITT ================= -->
+      <section id="screen-path" class="min-h-full grass-bg p-4 flex flex-col items-center relative pb-24">
+        <div class="w-full flex justify-between px-2 mb-2 opacity-70">
+          <span class="text-2xl animate-pulse">💡</span>
+          <h1 class="text-xl font-black text-white tracking-widest uppercase drop-shadow">Trainings-Pfad</h1>
+          <span class="text-2xl animate-pulse">💡</span>
         </div>
 
-        <!-- Zusätzliche Aktionen: Kabine & Video -->
-        <div class="grid grid-cols-2 gap-3 w-full pt-1">
-          <button onclick="openLockerRoom()" class="bouncy bg-yellow-400 p-3 rounded-2xl shadow-lg border-b-4 border-yellow-500 flex flex-col items-center">
-            <span class="text-2xl">👕</span>
-            <span class="font-black text-slate-900 text-xs">Kabine & Shop</span>
-          </button>
-          <button onclick="watchVideoAd()" class="bouncy bg-indigo-500 text-white p-3 rounded-2xl shadow-lg border-b-4 border-indigo-700 flex flex-col items-center">
-            <span class="text-2xl">📺</span>
-            <span class="font-black text-xs">+25 Bälle</span>
-            <span class="text-[9px] text-indigo-200">Video ansehen</span>
-          </button>
+        <div class="w-full relative flex flex-col items-center space-y-6 pt-2">
+          <div class="absolute w-2.5 bg-yellow-400/80 rounded-full top-8 bottom-8 z-0 shadow"></div>
+
+          <!-- Station 1: Zahlen- & Mengenkicker -->
+          <div class="relative z-10 flex flex-col items-center">
+            <button onclick="startCountingGame()" class="bouncy w-20 h-20 bg-white rounded-3xl p-2 shadow-2xl border-4 border-yellow-400 flex flex-col items-center justify-center">
+              <span class="text-3xl">🔢</span>
+              <span class="text-[9px] font-black uppercase text-emerald-800">Zahlen</span>
+            </button>
+            <span id="tier-badge-math" class="bg-yellow-400 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full mt-1.5 shadow">Stufe 1</span>
+          </div>
+
+          <!-- Station 2: Buchstaben & Anlaute -->
+          <div class="relative z-10 flex flex-col items-center">
+            <button onclick="startLetterGame()" class="bouncy w-20 h-20 bg-white rounded-3xl p-2 shadow-2xl border-4 border-yellow-400 flex flex-col items-center justify-center">
+              <span class="text-3xl">🅰️</span>
+              <span class="text-[9px] font-black uppercase text-slate-800">Anlaute</span>
+            </button>
+            <span id="tier-badge-letter" class="bg-yellow-400 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full mt-1.5 shadow">Stufe 1</span>
+          </div>
+
+          <!-- Station 3: Taktik & Orientierung -->
+          <div class="relative z-10 flex flex-col items-center">
+            <button onclick="showScreen('screen-tactic')" class="bouncy w-20 h-20 bg-emerald-800 rounded-3xl p-2 shadow-2xl border-4 border-white flex flex-col items-center justify-center text-white">
+              <span class="text-3xl">📋</span>
+              <span class="text-[9px] font-black uppercase text-yellow-300">Taktik</span>
+            </button>
+            <span class="bg-white text-emerald-950 font-black text-[10px] px-2.5 py-0.5 rounded-full mt-1.5 shadow">Pass-Weg</span>
+          </div>
+
+          <!-- Station 4: Liga-Aufstieg (Finale) -->
+          <div class="relative z-10 flex flex-col items-center">
+            <button onclick="showScreen('screen-league')" class="bouncy w-22 h-22 bg-gradient-to-tr from-amber-400 to-yellow-300 rounded-3xl p-2 shadow-2xl border-4 border-white flex flex-col items-center justify-center text-slate-950">
+              <span class="text-4xl animate-bounce">🏆</span>
+              <span class="text-[9px] font-black uppercase tracking-wider">Liga-Cup</span>
+            </button>
+            <span class="bg-slate-900 text-yellow-400 border border-yellow-400 font-black text-[10px] px-3 py-0.5 rounded-full mt-1.5 shadow">Karriere</span>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Screen 2: Spiel 1 (Zählen) -->
-      <div id="screen-game-count" class="w-full hidden flex-col items-center space-y-4">
-        <h2 id="count-title" class="text-xl font-black text-white">Wie viele Bälle siehst du?</h2>
-        <div id="goal-area" class="w-full h-40 bg-white/95 rounded-2xl border-4 border-white shadow-inner flex flex-wrap items-center justify-center p-3 gap-3"></div>
-        <div id="answer-buttons-count" class="grid grid-cols-4 gap-2 w-full pt-2"></div>
-        <button onclick="showMenu()" class="text-xs text-white underline mt-2 font-bold">Zurück zur Übersicht</button>
-      </div>
-
-      <!-- Screen 3: Spiel 2 (Buchstaben-Pass) -->
-      <div id="screen-game-letters" class="w-full hidden flex-col items-center space-y-4">
-        <h2 id="letter-title" class="text-xl font-black text-white">Finde den passenden Buchstaben!</h2>
-        <div class="bg-white/95 rounded-2xl p-5 shadow-inner w-full flex flex-col items-center">
-          <div id="letter-prompt-icon" class="text-6xl mb-2">⚽</div>
-          <div id="letter-prompt-word" class="text-2xl font-black text-slate-800">T wie Tor!</div>
+      <!-- ================= LERNSPIEL: ZAHLEN & MENGEN (PROGRESSIV) ================= -->
+      <section id="screen-game-count" class="hidden min-h-full grass-bg p-4 flex flex-col items-center justify-center pb-24 text-center">
+        <div class="w-full flex justify-between items-center text-white px-2 mb-2">
+          <span class="text-xs font-black bg-black/40 px-2.5 py-1 rounded-full uppercase" id="game-tier-label">Schwierigkeit: Leicht</span>
+          <span class="text-xs font-bold text-yellow-300" id="game-stars-label">⭐⭐☆</span>
         </div>
-        <div id="answer-buttons-letter" class="grid grid-cols-3 gap-3 w-full pt-2"></div>
-        <button onclick="showMenu()" class="text-xs text-white underline mt-2 font-bold">Zurück zur Übersicht</button>
-      </div>
-
-      <!-- Screen 4: Spiel 3 (Farben & Trikots) -->
-      <div id="screen-game-colors" class="w-full hidden flex-col items-center space-y-4">
-        <h2 id="color-title" class="text-xl font-black text-white">Welches Trikot hat die Farbe?</h2>
-        <div id="color-target-box" class="w-full py-4 bg-white/95 rounded-2xl shadow-inner font-black text-xl text-slate-800">
-          Suche das <span id="color-target-name" class="underline">Blaue</span> Trikot!
-        </div>
-        <div id="answer-buttons-color" class="grid grid-cols-3 gap-3 w-full pt-2"></div>
-        <button onclick="showMenu()" class="text-xs text-white underline mt-2 font-bold">Zurück zur Übersicht</button>
-      </div>
-
-      <!-- Screen 5: Spiel 4 (Stadion-Sounds) -->
-      <div id="screen-game-sounds" class="w-full hidden flex-col items-center space-y-4">
-        <h2 class="text-xl font-black text-white">Welches Geräusch hörst du?</h2>
-        <button onclick="replayCurrentSound()" class="bouncy bg-yellow-400 p-6 rounded-full shadow-2xl text-5xl border-4 border-white animate-pulse">
-          🔊
-        </button>
-        <span class="text-xs text-emerald-100 font-bold">Tippe auf den Lautsprecher zum Wiederholen</span>
-        <div id="answer-buttons-sound" class="grid grid-cols-3 gap-3 w-full pt-2"></div>
-        <button onclick="showMenu()" class="text-xs text-white underline mt-2 font-bold">Zurück zur Übersicht</button>
-      </div>
-
-      <!-- Screen 6: Kabine & Shop -->
-      <div id="screen-locker" class="w-full hidden flex-col items-center space-y-3">
-        <h2 class="text-2xl font-black text-white">Kicker-Kabine</h2>
-        <div class="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center text-6xl shadow-inner border-2 border-white/40" id="current-avatar">
-          👦
-        </div>
-        <p id="current-gear-label" class="text-white text-xs font-bold">Ausrüstung: Standard Heimtrikot</p>
         
-        <div class="w-full bg-white/95 rounded-2xl p-3 shadow-lg space-y-2 text-left max-h-56 overflow-y-auto">
-          <div class="flex justify-between items-center p-2 rounded-xl bg-slate-100">
-            <div>
-              <span class="text-xs font-black block">⭐ Goldenes Meister-Trikot</span>
-              <span class="text-[10px] text-slate-500 font-bold">+5 Glanz-Effekt</span>
-            </div>
-            <button onclick="buyItem('jersey_gold', 60, '⭐ Gold-Trikot')" class="bouncy bg-yellow-400 text-slate-900 text-xs px-3 py-1.5 rounded-lg font-black shadow">60 ⚽</button>
+        <h2 id="count-question-title" class="text-xl font-black text-white mb-2">Wie viele Bälle siehst du?</h2>
+        <div id="goal-area" class="w-full h-44 bg-white/95 rounded-3xl border-4 border-white shadow-2xl flex flex-wrap items-center justify-center p-3 gap-3 mb-4"></div>
+        <div id="answer-buttons-count" class="grid grid-cols-3 gap-2.5 w-full"></div>
+      </section>
+
+      <!-- ================= LERNSPIEL: BUCHSTABEN & ANLAUTE (PROGRESSIV) ================= -->
+      <section id="screen-game-letter" class="hidden min-h-full grass-bg p-4 flex flex-col items-center justify-center pb-24 text-center">
+        <div class="w-full flex justify-between items-center text-white px-2 mb-2">
+          <span class="text-xs font-black bg-black/40 px-2.5 py-1 rounded-full uppercase" id="letter-tier-label">Schwierigkeit: Leicht</span>
+          <span class="text-xs font-bold text-yellow-300">Vorschul-Literacy</span>
+        </div>
+
+        <h2 class="text-xl font-black text-white mb-2">Womit beginnt das Wort?</h2>
+        <div class="w-full bg-white/95 rounded-3xl p-6 shadow-2xl flex flex-col items-center mb-4">
+          <div id="letter-icon" class="text-6xl mb-2 animate-pulse">⚽</div>
+          <div id="letter-word" class="text-2xl font-black text-emerald-900">Ball</div>
+        </div>
+        <div id="answer-buttons-letter" class="grid grid-cols-3 gap-3 w-full"></div>
+      </section>
+
+      <!-- ================= TAKTIK-TAFEL ================= -->
+      <section id="screen-tactic" class="hidden min-h-full bg-slate-900 p-4 flex flex-col items-center pb-24">
+        <h2 class="text-xl font-black text-white mb-1">Taktik-Training</h2>
+        <p class="text-xs text-emerald-300 font-bold mb-3">Passe den Ball zum freien Mitspieler!</p>
+        <div class="w-full h-80 bg-emerald-800 rounded-3xl border-4 border-amber-800 shadow-2xl relative p-3 flex flex-col justify-between chalk-line">
+          <div class="w-24 h-6 border-b-2 border-x-2 border-white/60 mx-auto rounded-b-lg"></div>
+          <div class="flex justify-around items-center">
+            <button onclick="handlePass(false)" class="bouncy w-14 h-14 bg-red-600 border-2 border-white rounded-full flex items-center justify-center text-2xl shadow-lg">👦</button>
+            <button onclick="handlePass(true)" class="bouncy w-14 h-14 bg-blue-500 border-2 border-yellow-300 rounded-full flex items-center justify-center text-2xl shadow-lg animate-pulse">👧</button>
           </div>
-          <div class="flex justify-between items-center p-2 rounded-xl bg-slate-100">
-            <div>
-              <span class="text-xs font-black block">🔥 Turbo-Fußballschuhe</span>
-              <span class="text-[10px] text-slate-500 font-bold">Extra schnell rennen</span>
+          <div class="flex justify-center items-center">
+            <div class="relative">
+              <div class="w-16 h-16 bg-yellow-400 border-2 border-slate-900 rounded-full flex items-center justify-center text-3xl shadow-xl">🧒</div>
+              <span class="text-xl absolute -top-2 -right-2 animate-bounce">⚽</span>
             </div>
-            <button onclick="buyItem('shoes_fire', 40, '🔥 Turbo-Schuhe')" class="bouncy bg-yellow-400 text-slate-900 text-xs px-3 py-1.5 rounded-lg font-black shadow">40 ⚽</button>
           </div>
-          <div class="flex justify-between items-center p-2 rounded-xl bg-slate-100">
+          <div class="w-24 h-4 border-t-2 border-x-2 border-white/60 mx-auto rounded-t-lg"></div>
+        </div>
+      </section>
+
+      <!-- ================= KABINE & SHOP ================= -->
+      <section id="screen-locker" class="hidden min-h-full bg-slate-900 p-4 flex flex-col items-center pb-24">
+        <h2 class="text-xl font-black text-white mb-1">Deine Kabine</h2>
+        <p class="text-xs text-slate-400 font-medium mb-3">Trikots & Bälle freischalten</p>
+        <div class="w-full bg-emerald-950/60 border-2 border-emerald-500/40 rounded-3xl p-5 flex flex-col items-center relative shadow-inner mb-4">
+          <div id="locker-avatar" class="w-28 h-28 bg-white/10 rounded-full flex items-center justify-center text-6xl border-4 border-yellow-400 shadow-2xl mb-2">🧒</div>
+          <span id="active-outfit-label" class="text-xs font-black text-yellow-300 uppercase tracking-wider">Standard Rot-Weiß</span>
+        </div>
+        <div class="w-full space-y-2 text-left">
+          <div class="flex justify-between items-center p-3 rounded-2xl bg-slate-800 border border-slate-700">
             <div>
-              <span class="text-xs font-black block">🌈 Regenbogen-Ball</span>
-              <span class="text-[10px] text-slate-500 font-bold">Bunte Flugbahn</span>
+              <span class="text-xs font-black text-white block">⭐ Goldenes Meister-Trikot</span>
+              <span class="text-[10px] text-yellow-400 font-bold">Für echte Champions</span>
             </div>
-            <button onclick="buyItem('ball_rainbow', 30, '🌈 Regenbogen-Ball')" class="bouncy bg-yellow-400 text-slate-900 text-xs px-3 py-1.5 rounded-lg font-black shadow">30 ⚽</button>
+            <button onclick="buyItem('jersey_gold', 60, '⭐ Gold-Trikot', '👦')" class="bouncy bg-yellow-400 text-slate-950 text-xs px-3.5 py-2 rounded-xl font-black shadow">60 ⚽</button>
+          </div>
+          <div class="flex justify-between items-center p-3 rounded-2xl bg-slate-800 border border-slate-700">
+            <div>
+              <span class="text-xs font-black text-white block">🔥 Turbo-Fußballschuhe</span>
+              <span class="text-[10px] text-emerald-400 font-bold">Schneller sprinten</span>
+            </div>
+            <button onclick="buyItem('shoes_fire', 40, '🔥 Turbo-Schuhe', '👧')" class="bouncy bg-yellow-400 text-slate-950 text-xs px-3.5 py-2 rounded-xl font-black shadow">40 ⚽</button>
+          </div>
+          <div class="flex justify-between items-center p-3 rounded-2xl bg-indigo-900/60 border border-indigo-500/40">
+            <div>
+              <span class="text-xs font-black text-white block">📺 Gratis Bälle erhalten</span>
+              <span class="text-[10px] text-indigo-300 font-bold">Kindgerechtes Kurzvideo</span>
+            </div>
+            <button onclick="watchVideoAd()" class="bouncy bg-indigo-500 text-white text-xs px-3.5 py-2 rounded-xl font-black shadow">+25 ⚽</button>
           </div>
         </div>
-        <button onclick="showMenu()" class="bouncy bg-slate-900 text-white font-bold px-6 py-2 rounded-full text-xs">Zurück zur Arena</button>
-      </div>
+      </section>
+
+      <!-- ================= LIGA-AUFSTIEG ================= -->
+      <section id="screen-league" class="hidden min-h-full bg-slate-900 p-4 flex flex-col items-center pb-24">
+        <h2 class="text-xl font-black text-white mb-1">Liga-Leiter</h2>
+        <p class="text-xs text-slate-400 font-medium mb-4">Erreiche Stufe 3 für den Meister-Pokal!</p>
+        <div class="w-full max-w-xs space-y-3 flex flex-col items-center" id="league-ladder-container">
+          <!-- Dynamisch generiert -->
+        </div>
+      </section>
+
+      <!-- ================= KARTEN & ALBUM ================= -->
+      <section id="screen-album" class="hidden min-h-full bg-slate-900 p-4 flex flex-col items-center pb-24">
+        <h2 class="text-xl font-black text-white mb-1">Sammel-Album</h2>
+        <p class="text-xs text-slate-400 font-medium mb-3">Sammle Sticker & Kicker-Karten!</p>
+        <div class="w-full bg-amber-50 rounded-3xl p-4 shadow-2xl border-4 border-amber-200 text-slate-900 mb-4">
+          <div class="grid grid-cols-3 gap-3" id="album-grid">
+            <div class="h-24 bg-amber-200/60 rounded-2xl border-2 border-dashed border-amber-400 flex flex-col items-center justify-center">
+              <span class="text-3xl">👦</span>
+              <span class="text-[9px] font-black text-amber-800">Leo</span>
+            </div>
+            <div class="h-24 bg-amber-200/60 rounded-2xl border-2 border-dashed border-amber-400 flex flex-col items-center justify-center">
+              <span class="text-3xl">👧</span>
+              <span class="text-[9px] font-black text-amber-800">Mia</span>
+            </div>
+            <div id="card-slot-3" class="h-24 bg-amber-200/30 rounded-2xl border-2 border-dashed border-amber-300 flex flex-col items-center justify-center text-amber-400 text-2xl font-black">
+              ?
+            </div>
+          </div>
+        </div>
+        <button onclick="openBoosterPack()" class="bouncy w-full max-w-xs bg-gradient-to-r from-amber-400 to-yellow-300 p-4 rounded-3xl shadow-2xl border-4 border-white flex items-center justify-between text-slate-950 font-black">
+          <div class="text-left">
+            <span class="text-xs uppercase block text-amber-900 font-black">Booster-Pack</span>
+            <span class="text-base font-black">Packung öffnen!</span>
+          </div>
+          <span class="text-3xl animate-bounce">📦</span>
+        </button>
+      </section>
 
     </main>
 
+    <!-- Feste Navigationsleiste -->
+    <nav class="bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-2 flex justify-around items-center z-20">
+      <button onclick="showScreen('screen-path')" class="bouncy flex flex-col items-center text-yellow-400">
+        <span class="text-2xl">🗺️</span>
+        <span class="text-[10px] font-black uppercase">Pfad</span>
+      </button>
+      <button onclick="showScreen('screen-locker')" class="bouncy flex flex-col items-center text-slate-400 hover:text-white">
+        <span class="text-2xl">👕</span>
+        <span class="text-[10px] font-black uppercase">Kabine</span>
+      </button>
+      <button onclick="showScreen('screen-league')" class="bouncy flex flex-col items-center text-slate-400 hover:text-white">
+        <span class="text-2xl">🏆</span>
+        <span class="text-[10px] font-black uppercase">Liga</span>
+      </button>
+      <button onclick="showScreen('screen-album')" class="bouncy flex flex-col items-center text-slate-400 hover:text-white">
+        <span class="text-2xl">📖</span>
+        <span class="text-[10px] font-black uppercase">Album</span>
+      </button>
+    </nav>
+
     <!-- Eltern-Gate Modal -->
-    <div id="parent-modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl space-y-4">
-        <h3 class="font-black text-slate-900 text-lg">Nur für Erwachsene</h3>
-        <p class="text-xs text-slate-500 font-medium">Löse die Rechenaufgabe zur Bestätigung:</p>
-        <div id="parent-math" class="text-3xl font-black text-emerald-600">4 + 5 = ?</div>
-        <input id="parent-input" type="number" class="w-24 text-center font-black text-2xl border-2 border-slate-300 rounded-xl py-1 mx-auto block" placeholder="?">
+    <div id="parent-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl space-y-4 text-white">
+        <h3 class="font-black text-lg">Nur für Erwachsene</h3>
+        <p class="text-xs text-slate-400">Löse die Rechenaufgabe zur Bestätigung:</p>
+        <div id="parent-math" class="text-3xl font-black text-yellow-400">4 + 5 = ?</div>
+        <input id="parent-input" type="number" class="w-24 text-center font-black text-2xl bg-slate-800 border-2 border-slate-600 rounded-xl py-1 mx-auto block text-white" placeholder="?">
         <div class="flex gap-2 justify-center">
-          <button onclick="closeParentGate()" class="bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs">Abbrechen</button>
-          <button onclick="checkParentGate()" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">Öffnen</button>
+          <button onclick="closeParentGate()" class="bg-slate-800 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs">Abbrechen</button>
+          <button onclick="checkParentGate()" class="bg-yellow-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs">Bestätigen</button>
         </div>
       </div>
     </div>
 
-    <!-- Eltern & Abo Dashboard Modal (3,99 €) -->
-    <div id="subscription-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl space-y-4">
-        <div class="flex justify-between items-center border-b pb-2">
-          <h3 class="font-black text-slate-900 text-lg">Eltern-Bereich & Abo</h3>
+    <!-- Eltern-Abo Dashboard Modal (3,99 €) -->
+    <div id="subscription-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl space-y-4 text-white">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+          <h3 class="font-black text-lg">Pro-Kicker Mitgliedschaft</h3>
           <button onclick="closeSubscriptionModal()" class="text-slate-400 font-bold text-lg">✕</button>
         </div>
-        
-        <div class="bg-amber-50 border-2 border-amber-300 p-3 rounded-2xl text-left space-y-1">
-          <span class="text-xs font-black text-amber-800 uppercase tracking-wider block">Pro-Kicker Abo</span>
-          <p class="text-sm font-extrabold text-slate-900">3,99 € / Monat</p>
-          <ul class="text-[11px] text-slate-600 font-semibold space-y-1 pt-1">
-            <li>✓ 100% werbefrei für dein Kind</li>
-            <li>✓ Alle Trikots, Schuhe und Bälle direkt freigeschaltet</li>
-            <li>✓ Unbegrenzter Zugriff auf alle Lern-Levels</li>
-            <li>✓ Jederzeit monatlich kündbar</li>
+        <div class="bg-amber-500/10 border-2 border-amber-400/40 p-3.5 rounded-2xl text-left space-y-1">
+          <span class="text-[10px] font-black text-yellow-400 uppercase tracking-widest block">Monats-Abo</span>
+          <p class="text-base font-black text-white">3,99 € / Monat</p>
+          <ul class="text-xs text-slate-300 font-semibold space-y-1 pt-1.5">
+            <li>✓ 100% werbefrei für Kinder</li>
+            <li>✓ Automatische Freischaltung aller Bildungsstufen</li>
+            <li>✓ Alle Trikots & Sammelkarten inklusive</li>
+            <li>✓ Jederzeit über Apple ID kündbar</li>
           </ul>
         </div>
-
-        <button onclick="simulateApplePay()" class="bouncy bg-black text-white w-full py-3 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-lg">
+        <button onclick="simulateApplePay()" class="bouncy bg-white text-slate-950 w-full py-3 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-xl">
           <span>Mit</span> <span class="text-lg">Pay</span> <span>abonnieren</span>
         </button>
-
-        <p class="text-[9px] text-slate-400">Zahlungsabwicklung läuft sicher über Apple In-App Purchase.</p>
       </div>
     </div>
 
   </div>
 
   <script>
-    // Audio Synthesizer (Erzeugt Töne nativ im Browser ohne externe MP3-Dateien)
+    // --- SUPABASE SETUP ---
+    const SUPABASE_URL = 'DEINE_SUPABASE_PROJECT_URL_HIER';
+    const SUPABASE_ANON_KEY = 'DEIN_SUPABASE_ANON_KEY_HIER';
+    const supabase = (SUPABASE_URL.startsWith('http')) 
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
+      : null;
+
+    // Web-Audio-Synthesizer
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playBeep(type) {
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -223,264 +308,303 @@
       osc.connect(gain);
       gain.connect(audioCtx.destination);
 
-      if (type === 'whistle') {
-        osc.frequency.setValueAtTime(1800, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1400, audioCtx.currentTime + 0.3);
+      if (type === 'goal') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(260, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(520, audioCtx.currentTime + 0.35);
         gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.35);
+      } else if (type === 'whistle') {
+        osc.frequency.setValueAtTime(1800, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1300, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
         gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.3);
-      } else if (type === 'cheer') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.4);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.4);
       } else {
-        osc.frequency.setValueAtTime(500, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
         gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.15);
       }
     }
 
-    // Sprachausgabe für Vorschulkinder (Deutsch)
+    // Sprachausgabe für Vorschulkinder
     function speak(text) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = 'de-DE';
-        msg.rate = 0.9;
+        msg.rate = 0.92;
         window.speechSynthesis.speak(msg);
       }
     }
 
-    // Spielzustand & Bälle
+    // --- SPEICHER- & PROGRESSIONS-LOGIK (PERMANENT) ---
     let balls = parseInt(localStorage.getItem('kk_balls') || '50');
+    let mathTier = parseInt(localStorage.getItem('kk_tier_math') || '1');
+    let letterTier = parseInt(localStorage.getItem('kk_tier_letter') || '1');
+    let consecutiveCorrect = parseInt(localStorage.getItem('kk_streak') || '0');
+    let playerId = localStorage.getItem('kk_player_id');
     let isPremium = localStorage.getItem('kk_premium') === 'true';
     let mathTarget = 9;
 
-    function renderState() {
-      document.getElementById('ball-count').innerText = balls;
-      if (isPremium) {
-        document.getElementById('vip-badge').classList.remove('hidden');
-      }
-    }
-    renderState();
-
-    function updateBalls(amount) {
-      balls = Math.max(0, balls + amount);
+    function saveState() {
       localStorage.setItem('kk_balls', balls);
-      renderState();
+      localStorage.setItem('kk_tier_math', mathTier);
+      localStorage.setItem('kk_tier_letter', letterTier);
+      localStorage.setItem('kk_streak', consecutiveCorrect);
+      renderUI();
+      syncWithSupabase();
     }
 
-    function showMenu() {
-      document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
-      document.getElementById('screen-menu').classList.remove('hidden');
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    function renderUI() {
+      document.getElementById('ball-count').innerText = balls;
+      const highestTier = Math.max(mathTier, letterTier);
+      document.getElementById('current-tier-badge').innerText = highestTier;
+      document.getElementById('tier-badge-math').innerText = "Stufe " + mathTier;
+      document.getElementById('tier-badge-letter').innerText = "Stufe " + letterTier;
+      renderLeague();
     }
 
-    function openLockerRoom() {
-      document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
-      document.getElementById('screen-locker').classList.remove('hidden');
-      speak("Willkommen in deiner Kicker-Kabine!");
+    async function syncWithSupabase() {
+      if (supabase && playerId) {
+        await supabase.from('players').update({
+          golden_balls: balls,
+          highest_level: Math.max(mathTier, letterTier)
+        }).eq('id', playerId);
+      }
     }
 
-    function buyItem(id, price, name) {
-      if (balls >= price) {
-        updateBalls(-price);
-        playBeep('cheer');
-        alert("🎉 Klasse! Du hast " + name + " angezogen!");
-        document.getElementById('current-gear-label').innerText = "Ausrüstung: " + name;
+    function showScreen(screenId) {
+      document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+      document.getElementById(screenId).classList.remove('hidden');
+      const backBtn = document.getElementById('nav-back-btn');
+      if (screenId === 'screen-path') {
+        backBtn.classList.add('hidden');
       } else {
-        speak("Du brauchst mehr Bälle!");
-        alert("⚽ Du brauchst noch mehr Bälle! Spiele ein Spiel oder schau ein kurzes Video.");
+        backBtn.classList.remove('hidden');
       }
     }
 
-    function watchVideoAd() {
-      speak("Werbevideo startet");
-      alert("📺 Kurzer Werbespot läuft... (Simulation)");
-      setTimeout(() => {
-        updateBalls(25);
-        playBeep('cheer');
-        speak("Super! Du hast 25 Bälle erhalten.");
-      }, 500);
-    }
+    // --- 1. PROGRESSIVES ZAHLENSPIEL (KMK-VORSCHULSTANDARDS) ---
+    let currentMathAnswer = 0;
 
-    // --- Spiel 1: Bälle Zählen ---
-    let currentCount = 3;
     function startCountingGame() {
-      document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
-      document.getElementById('screen-game-count').classList.remove('hidden');
-      currentCount = Math.floor(Math.random() * 4) + 1;
-      
+      showScreen('screen-game-count');
       const goal = document.getElementById('goal-area');
+      const container = document.getElementById('answer-buttons-count');
       goal.innerHTML = '';
-      for (let i = 0; i < currentCount; i++) {
-        goal.innerHTML += '<span class="text-4xl animate-bounce">⚽</span>';
+      container.innerHTML = '';
+
+      let maxCount = 4;
+      let label = "Stufe 1 (Mengen bis 4)";
+      let stars = "⭐☆☆";
+
+      if (mathTier === 2) {
+        maxCount = 7;
+        label = "Stufe 2 (Mengen bis 7)";
+        stars = "⭐⭐☆";
+      } else if (mathTier >= 3) {
+        maxCount = 10;
+        label = "Stufe 3 (Zahlenraum bis 10)";
+        stars = "⭐⭐⭐";
       }
 
-      const answers = document.getElementById('answer-buttons-count');
-      answers.innerHTML = '';
-      [1, 2, 3, 4].forEach(n => {
-        answers.innerHTML += `
-          <button onclick="checkCountAnswer(${n})" class="bouncy bg-white text-emerald-800 font-black text-2xl py-3 rounded-2xl shadow-md border-b-4 border-slate-200">
-            ${n}
+      document.getElementById('game-tier-label').innerText = label;
+      document.getElementById('game-stars-label').innerText = stars;
+
+      currentMathAnswer = Math.floor(Math.random() * (maxCount - 1)) + 2; // Mind. 2
+
+      for (let i = 0; i < currentMathAnswer; i++) {
+        goal.innerHTML += '<span class="text-3xl animate-bounce">⚽</span>';
+      }
+
+      // 3 Auswahl-Optionen generieren
+      let options = [currentMathAnswer];
+      while (options.length < 3) {
+        let fake = Math.floor(Math.random() * maxCount) + 1;
+        if (!options.includes(fake)) options.push(fake);
+      }
+      options.sort(() => 0.5 - Math.random());
+
+      options.forEach(num => {
+        container.innerHTML += `
+          <button onclick="checkCountAnswer(${num})" class="bouncy bg-white text-emerald-950 font-black text-2xl py-3.5 rounded-2xl shadow-lg border-b-4 border-slate-200">
+            ${num}
           </button>
         `;
       });
+
       speak("Wie viele Bälle siehst du im Tor?");
     }
 
-    function checkCountAnswer(val) {
-      if (val === currentCount) {
-        playBeep('cheer');
+    function checkCountAnswer(selected) {
+      if (selected === currentMathAnswer) {
+        playBeep('goal');
         speak("Toooor! Richtig gezählt!");
-        updateBalls(3);
-        showMenu();
+        balls += 3;
+        consecutiveCorrect++;
+
+        // Stufen-Aufstieg nach 3 richtigen Antworten
+        if (consecutiveCorrect >= 3 && mathTier < 3) {
+          mathTier++;
+          consecutiveCorrect = 0;
+          speak("Klasse gemacht! Du hast die nächste Stufe freigeschaltet!");
+          alert("🎉 STUFEN-AUFSTIEG!\n\nDu hast Stufe " + mathTier + " erreicht!");
+        }
+
+        saveState();
+        showScreen('screen-path');
       } else {
         playBeep('beep');
-        speak("Versuch es noch einmal!");
+        consecutiveCorrect = Math.max(0, consecutiveCorrect - 1);
+        speak("Zähle noch einmal in Ruhe!");
       }
     }
 
-    // --- Spiel 2: Buchstaben-Pass ---
-    const lettersData = [
-      { letter: 'T', word: 'Tor', icon: '🥅' },
+    // --- 2. PROGRESSIVER BUCHSTABEN-PASS (ANLAUTE & LITERACY) ---
+    const vocabulary = [
       { letter: 'B', word: 'Ball', icon: '⚽' },
+      { letter: 'T', word: 'Tor', icon: '🥅' },
       { letter: 'P', word: 'Pfeife', icon: '📣' },
-      { letter: 'S', word: 'Schuh', icon: '👟' }
+      { letter: 'S', word: 'Schuh', icon: '👟' },
+      { letter: 'H', word: 'Handschuh', icon: '🧤' },
+      { letter: 'K', word: 'Kicker', icon: '🧒' }
     ];
-    let currentLetterItem = null;
+    let currentVocab = null;
 
     function startLetterGame() {
-      document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
-      document.getElementById('screen-game-letters').classList.remove('hidden');
+      showScreen('screen-game-letter');
+      const container = document.getElementById('answer-buttons-letter');
+      container.innerHTML = '';
 
-      currentLetterItem = lettersData[Math.floor(Math.random() * lettersData.length)];
-      document.getElementById('letter-prompt-icon').innerText = currentLetterItem.icon;
-      document.getElementById('letter-prompt-word').innerText = currentLetterItem.word;
+      let pool = vocabulary.slice(0, 3); // Stufe 1: 3 Vokabeln
+      let label = "Stufe 1 (Einfache Anlaute)";
+      if (letterTier >= 2) {
+        pool = vocabulary; // Stufe 2 & 3: alle Wörter
+        label = "Stufe 2 (Wortschatz-Training)";
+      }
+      document.getElementById('letter-tier-label').innerText = label;
 
-      const letters = ['T', 'B', 'P', 'S'].sort(() => 0.5 - Math.random()).slice(0, 3);
-      if (!letters.includes(currentLetterItem.letter)) letters[0] = currentLetterItem.letter;
-      letters.sort();
+      currentVocab = pool[Math.floor(Math.random() * pool.length)];
+      document.getElementById('letter-icon').innerText = currentVocab.icon;
+      document.getElementById('letter-word').innerText = currentVocab.word;
 
-      const btnContainer = document.getElementById('answer-buttons-letter');
-      btnContainer.innerHTML = '';
-      letters.forEach(l => {
-        btnContainer.innerHTML += `
-          <button onclick="checkLetterAnswer('${l}')" class="bouncy bg-white text-emerald-800 font-black text-3xl py-3 rounded-2xl shadow-md border-b-4 border-slate-200">
+      let choices = [currentVocab.letter];
+      const allLetters = ['B', 'T', 'P', 'S', 'H', 'K'];
+      while (choices.length < (letterTier >= 3 ? 4 : 3)) {
+        let fake = allLetters[Math.floor(Math.random() * allLetters.length)];
+        if (!choices.includes(fake)) choices.push(fake);
+      }
+      choices.sort(() => 0.5 - Math.random());
+
+      choices.forEach(l => {
+        container.innerHTML += `
+          <button onclick="checkLetterAnswer('${l}')" class="bouncy bg-white text-emerald-950 font-black text-3xl py-4 rounded-2xl shadow-lg border-b-4 border-slate-200">
             ${l}
           </button>
         `;
       });
 
-      speak(`Welcher Buchstabe passt zu ${currentLetterItem.word}?`);
+      speak(`Womit beginnt das Wort ${currentVocab.word}?`);
     }
 
     function checkLetterAnswer(selected) {
-      if (selected === currentLetterItem.letter) {
-        playBeep('cheer');
-        speak(`Richtig! ${selected} wie ${currentLetterItem.word}!`);
-        updateBalls(3);
-        showMenu();
+      if (selected === currentVocab.letter) {
+        playBeep('goal');
+        speak(`Richtig! ${selected} wie ${currentVocab.word}!`);
+        balls += 3;
+        
+        if (letterTier < 3) {
+          letterTier++;
+          alert("🎉 Buchstaben-Aufstieg auf Stufe " + letterTier + "!");
+        }
+
+        saveState();
+        showScreen('screen-path');
       } else {
         playBeep('beep');
-        speak("Nicht ganz richtig, versuche es noch einmal.");
+        speak("Hör genau hin: Womit beginnt es?");
       }
     }
 
-    // --- Spiel 3: Trikot-Farben ---
-    const colorList = [
-      { name: 'Rote', class: 'bg-red-500 text-white' },
-      { name: 'Blaue', class: 'bg-blue-500 text-white' },
-      { name: 'Gelbe', class: 'bg-yellow-400 text-slate-900' }
-    ];
-    let targetColor = null;
-
-    function startColorGame() {
-      document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
-      document.getElementById('screen-game-colors').classList.remove('hidden');
-
-      targetColor = colorList[Math.floor(Math.random() * colorList.length)];
-      document.getElementById('color-target-name').innerText = targetColor.name;
-
-      const container = document.getElementById('answer-buttons-color');
-      container.innerHTML = '';
-      colorList.forEach(c => {
-        container.innerHTML += `
-          <button onclick="checkColorAnswer('${c.name}')" class="bouncy ${c.class} font-black text-base py-5 rounded-2xl shadow-md border-b-4 border-black/20 flex flex-col items-center">
-            <span class="text-3xl mb-1">👕</span>
-            <span>${c.name}s</span>
-          </button>
-        `;
-      });
-
-      speak(`Suche das ${targetColor.name} Trikot!`);
-    }
-
-    function checkColorAnswer(chosen) {
-      if (chosen === targetColor.name) {
-        playBeep('cheer');
-        speak("Klasse! Das ist das richtige Trikot!");
-        updateBalls(3);
-        showMenu();
-      } else {
-        playBeep('beep');
-        speak("Das ist ein anderes Trikot!");
-      }
-    }
-
-    // --- Spiel 4: Stadion-Sounds ---
-    let soundTarget = 'whistle';
-    function startSoundGame() {
-      document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
-      document.getElementById('screen-game-sounds').classList.remove('hidden');
-
-      const sounds = ['whistle', 'cheer'];
-      soundTarget = sounds[Math.floor(Math.random() * sounds.length)];
-
-      const container = document.getElementById('answer-buttons-sound');
-      container.innerHTML = `
-        <button onclick="checkSoundAnswer('whistle')" class="bouncy bg-white p-3 rounded-2xl shadow border-b-4 border-slate-200">
-          <span class="text-3xl block">📣</span>
-          <span class="text-xs font-bold text-slate-800">Schiri-Pfeife</span>
-        </button>
-        <button onclick="checkSoundAnswer('cheer')" class="bouncy bg-white p-3 rounded-2xl shadow border-b-4 border-slate-200">
-          <span class="text-3xl block">🙌</span>
-          <span class="text-xs font-bold text-slate-800">Tor-Jubel</span>
-        </button>
-        <button onclick="checkSoundAnswer('drum')" class="bouncy bg-white p-3 rounded-2xl shadow border-b-4 border-slate-200">
-          <span class="text-3xl block">🥁</span>
-          <span class="text-xs font-bold text-slate-800">Trommel</span>
-        </button>
+    // --- 3. LIGA-LEITER RENDERN ---
+    function renderLeague() {
+      const ladder = document.getElementById('league-ladder-container');
+      const maxTier = Math.max(mathTier, letterTier);
+      ladder.innerHTML = `
+        <div class="w-full p-3.5 rounded-2xl ${maxTier >= 3 ? 'bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950' : 'bg-slate-800 text-slate-500'} font-black flex items-center justify-between shadow-lg">
+          <span class="text-2xl">🏆</span>
+          <span class="text-sm uppercase">Champion Cup</span>
+          <span class="text-xs bg-black/20 px-2 py-0.5 rounded-md">${maxTier >= 3 ? 'Erreicht' : 'Gesperrt'}</span>
+        </div>
+        <div class="w-full p-3.5 rounded-2xl ${maxTier >= 2 ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white' : 'bg-slate-800 text-slate-500'} font-black flex items-center justify-between shadow">
+          <span class="text-2xl">🥇</span>
+          <span class="text-sm uppercase">Meister-Liga</span>
+          <span class="text-xs bg-black/20 px-2 py-0.5 rounded-md">${maxTier >= 2 ? 'Erreicht' : 'Gesperrt'}</span>
+        </div>
+        <div class="w-full p-3.5 rounded-2xl bg-emerald-800 border-2 border-emerald-400 text-white font-black flex items-center justify-between shadow-xl">
+          <span class="text-2xl">🥉</span>
+          <span class="text-sm uppercase">Bambini-Anfänger</span>
+          <span class="text-xs bg-emerald-600 px-2 py-0.5 rounded-md">Geschafft</span>
+        </div>
       `;
-
-      speak("Welches Geräusch hörst du?");
-      setTimeout(() => playBeep(soundTarget), 800);
     }
 
-    function replayCurrentSound() {
-      playBeep(soundTarget);
-    }
-
-    function checkSoundAnswer(answer) {
-      if (answer === soundTarget) {
-        playBeep('cheer');
-        speak("Toooor! Richtig erkannt!");
-        updateBalls(3);
-        showMenu();
+    // --- TAKTIK PASS & SHOP ---
+    function handlePass(isCorrect) {
+      if (isCorrect) {
+        playBeep('whistle');
+        speak("Perfekter Pass!");
+        balls += 5;
+        saveState();
+        showScreen('screen-path');
       } else {
         playBeep('beep');
-        speak("Hör noch einmal genau hin!");
+        speak("Passe zur freien Mitspielerin!");
       }
     }
 
-    // --- Elternbereich & Apple Pay Simulation ---
+    function buyItem(id, price, name, avatar) {
+      if (balls >= price) {
+        balls -= price;
+        playBeep('goal');
+        document.getElementById('locker-avatar').innerText = avatar;
+        document.getElementById('active-outfit-label').innerText = name;
+        saveState();
+        alert("🎉 Klasse! Du hast " + name + " angezogen!");
+      } else {
+        speak("Du brauchst mehr Bälle!");
+        alert("⚽ Sammle mehr Bälle durch Spielen oder schau ein Video!");
+      }
+    }
+
+    function watchVideoAd() {
+      speak("Werbung startet");
+      alert("📺 Kurzer Werbespot... (Simulation)");
+      setTimeout(() => {
+        balls += 25;
+        playBeep('goal');
+        speak("Klasse! Du hast 25 Bälle erhalten.");
+        saveState();
+      }, 500);
+    }
+
+    function openBoosterPack() {
+      playBeep('goal');
+      balls += 10;
+      document.getElementById('card-slot-3').innerText = "⭐";
+      document.getElementById('card-slot-3').classList.remove('text-amber-400');
+      document.getElementById('card-slot-3').classList.add('text-yellow-600', 'bg-amber-300');
+      saveState();
+      alert("🎉 BOOSTER GEÖFFNET!\n\nDu hast die goldene Sammelkarte 'Sternen-Kicker' freigeschaltet!");
+    }
+
+    // --- ELTERN-GATE & APPLE PAY ---
     function openParentGate() {
       const a = Math.floor(Math.random() * 5) + 3;
       const b = Math.floor(Math.random() * 5) + 2;
@@ -514,13 +638,18 @@
     }
 
     function simulateApplePay() {
-      alert("Pay Bestätigung:\n\nKickerKids Pro-Abo\n3,99 € / Monat\n\n(Zahlung erfolgreich simuliert!)");
+      alert("Pay Zahlung erfolgreich:\nKickerKids Pro-Abo\n3,99 € / Monat");
       isPremium = true;
+      mathTier = 3;
+      letterTier = 3;
       localStorage.setItem('kk_premium', 'true');
-      renderState();
+      saveState();
       closeSubscriptionModal();
-      alert("🎉 Glückwunsch! Dein Pro-Kicker Abo ist aktiv. Alle Spiele sind ab jetzt werbefrei!");
+      alert("🎉 Willkommen im Pro-Kicker Club! Alle Bildungsstufen sind freigeschaltet.");
     }
+
+    // Initialisierung beim Start
+    renderUI();
   </script>
 </body>
 </html>
