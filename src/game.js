@@ -1,21 +1,40 @@
-const WORDS = [
- {word:'Ball',icon:'⚽',syllables:1,parts:'Ball'},
- {word:'Sonne',icon:'☀️',syllables:2,parts:'Son-ne'},
- {word:'Banane',icon:'🍌',syllables:3,parts:'Ba-na-ne'},
- {word:'Blume',icon:'🌷',syllables:2,parts:'Blu-me'},
- {word:'Hut',icon:'🎩',syllables:1,parts:'Hut'},
- {word:'Tomate',icon:'🍅',syllables:3,parts:'To-ma-te'},
- {word:'Krone',icon:'👑',syllables:2,parts:'Kro-ne'}
-];
+const WORDS=[{word:'Ball',icon:'⚽',syllables:1,parts:'Ball'},{word:'Sonne',icon:'☀️',syllables:2,parts:'Son-ne'},{word:'Banane',icon:'🍌',syllables:3,parts:'Ba-na-ne'},{word:'Blume',icon:'🌷',syllables:2,parts:'Blu-me'},{word:'Hut',icon:'🎩',syllables:1,parts:'Hut'},{word:'Tomate',icon:'🍅',syllables:3,parts:'To-ma-te'},{word:'Krone',icon:'👑',syllables:2,parts:'Kro-ne'},{word:'Rakete',icon:'🚀',syllables:3,parts:'Ra-ke-te'},{word:'Fisch',icon:'🐟',syllables:1,parts:'Fisch'}];
+const RHYMES=[['Haus','🏠','Maus','🐭'],['Nase','👃','Hase','🐰'],['Hose','👖','Rose','🌹'],['Kuh','🐮','Schuh','👟'],['Topf','🍲','Knopf','🔘']];
+const FAMILIES=[['🍎','🍐','🍓','🍌','🍇'],['🐱','🐶','🐰','🦊','🐻'],['🚗','🚕','🚙','🚌','🚒']];
+export const GAME_TYPES=['path','memory','sum','count','pattern','syllable','compare','odd','sort','rhyme','subtract'];
 export function shuffle(values,rng=Math.random){const a=[...values];for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-export function numericOptions(answer,max,rng=Math.random){const pool=Array.from({length:max+1},(_,i)=>i).filter(n=>n!==answer);pool.sort((a,b)=>Math.abs(a-answer)-Math.abs(b-answer));return shuffle([answer,...pool.slice(0,2)],rng);}
-export function createRound(type,stage,index,rng=Math.random){
- const school=stage==='school';
- if(type==='count'){const amount=(school?[6,8,10,12,15]:[2,3,4,5,6])[index%5];return {type,answer:amount,amount,options:numericOptions(amount,school?20:10,rng),prompt:'Wie viele siehst du?',hint:'Tippe jedes Teil einmal an. Das letzte Zahlwort sagt dir, wie viele es sind.'};}
- if(type==='sum'){const [a,b]=(school?[[3,2],[5,3],[6,4],[10,3],[10,7]]:[[1,1],[1,2],[2,2],[3,1],[2,3]])[index%5];return {type,a,b,answer:a+b,options:numericOptions(a+b,school?20:5,rng),prompt:`Wie viel ist ${a} plus ${b}?`,hint:'Zähle zuerst die linke Gruppe. Zähle dann mit der rechten Gruppe weiter.'};}
- if(type==='pattern'){const shapes=['●','◆','▲'];const sequence=school&&index>1?['●','◆','▲','●','◆']:index%2===0?['●','◆','●','◆','●']:['▲','●','▲','●','▲'];const answer=school&&index>1?'▲':sequence[1];return {type,sequence,answer,options:shuffle(shapes,rng),prompt:'Was kommt als Nächstes?',hint:school&&index>1?'Die Regel ist: Kreis, Raute, Dreieck. Dann beginnt es wieder.':'Sprich die Formen der Reihe nach. Welche zwei Formen wechseln sich ab?'};}
- if(type==='syllable'){const item=WORDS[(index+(school?2:0))%WORDS.length];return {type,...item,answer:item.syllables,options:shuffle([1,2,3],rng),prompt:`Klatsche das Wort ${item.word}. Wie viele Silben hörst du?`,hint:`Sprich langsam: ${item.parts}. Klatsche zu jeder Sprechsilbe einmal.`};}
+const pick=(a,rng)=>a[Math.floor(rng()*a.length)];
+const int=(a,b,rng)=>a+Math.floor(rng()*(b-a+1));
+export function numericOptions(answer,max,rng=Math.random){const pool=Array.from({length:max+1},(_,i)=>i).filter(n=>n!==answer);pool.sort((a,b)=>Math.abs(a-answer)-Math.abs(b-answer));return shuffle([answer,...shuffle(pool.slice(0,5),rng).slice(0,2)],rng);}
+export function createRound(type,stage,index,rng=Math.random,difficulty='explorer'){
+ const school=stage==='school',hard=difficulty==='expert',easy=difficulty==='starter';
+ if(type==='path')return createPath(school&&!easy?5:4,rng,hard);
+ if(type==='memory'){const pairs=hard?6:school?4:3;const icons=shuffle(['🦊','🦋','🐢','🌷','🍓','🚀','🐙','🌻'],rng).slice(0,pairs);return {type,cards:shuffle([...icons,...icons],rng),prompt:'Finde die versteckten Paare.',hint:'Merke dir, wo du ein Bild schon gesehen hast.',options:[]};}
+ if(type==='count'){const amount=int(easy?2:3,school?(hard?20:15):(hard?10:8),rng);return {type,answer:amount,amount,options:numericOptions(amount,school?20:10,rng),prompt:'Wie viele Schätze verstecken sich hier?',hint:'Tippe die Schätze einzeln an. Jeder gefundene Schatz leuchtet auf.'};}
+ if(type==='sum'){const target=int(school?8:4,school?(hard?20:15):(hard?10:8),rng);const base=int(1,target-2,rng);return {type,target,base,answer:target-base,pieces:school?[1,2,5]:[1,2,3],options:[],prompt:'Packe die fehlenden Schätze ein.',hint:`In der Truhe liegen ${base}. Insgesamt brauchst du ${target}. Probiere verschiedene Pakete aus. Du kannst sie wieder herausnehmen.`};}
+ if(type==='subtract'){const total=int(school?8:4,school?20:9,rng),gone=int(1,total-1,rng);return {type,total,gone,answer:total-gone,options:numericOptions(total-gone,school?20:10,rng),prompt:`${gone} Schätze fliegen davon. Wie viele bleiben?`,hint:'Die blassen Schätze sind schon weggeflogen. Zähle nur die vollen Schätze.'};}
+ if(type==='pattern'){const shapes=shuffle(['●','◆','▲','■'],rng);const rule=pick(hard?[[0,0,1],[0,1,2],[0,1,1,2]]:school?[[0,1],[0,0,1],[0,1,2]]:[[0,1],[0,0,1]],rng);const length=rule.length*2-1;const sequence=Array.from({length},(_,i)=>shapes[rule[i%rule.length]]);const answer=shapes[rule[length%rule.length]];return {type,sequence,rule:rule.map(i=>shapes[i]),answer,options:shuffle(shapes.slice(0,3).includes(answer)?shapes.slice(0,3):[answer,...shapes.filter(s=>s!==answer).slice(0,2)],rng),prompt:'Knacke den geheimen Mustercode.',hint:'Suche die kleine Gruppe, die sich wiederholt. Sprich ihre Formen laut aus.'};}
+ if(type==='syllable'){const item=pick(WORDS,rng);return {type,...item,answer:item.syllables,options:shuffle([1,2,3],rng),prompt:`Klatsche das Wort ${item.word}.`,hint:`Sprich langsam: ${item.parts}. Klatsche zu jeder Sprechsilbe einmal.`};}
+ if(type==='compare'){const left=int(2,school?15:8,rng),right=rng()<.18?left:int(2,school?15:8,rng);return {type,left,right,answer:left===right?'same':left>right?'left':'right',options:['left','same','right'],prompt:'Wo liegen mehr Schätze?',hint:'Ordne im Kopf jedem linken Schatz einen rechten zu. Wo bleiben welche übrig?'};}
+ if(type==='odd'){const family=int(0,2,rng),other=(family+int(1,2,rng))%3;const answer=pick(FAMILIES[other],rng),members=shuffle(FAMILIES[family],rng).slice(0,3);return {type,answer,options:shuffle([...members,answer],rng),prompt:'Wer passt nicht zu den anderen?',hint:'Drei Dinge gehören zu einer Familie: Obst, Tiere oder Fahrzeuge. Ein Ding gehört nicht dazu.'};}
+ if(type==='sort'){const n=hard?5:4;const values=shuffle(Array.from({length:school?20:10},(_,i)=>i+1),rng).slice(0,n);return {type,values,solution:[...values].sort((a,b)=>a-b),options:[],prompt:'Baue die Zahlentreppe.',hint:'Beginne mit der kleinsten Zahl. Suche dann die nächstgrößere.'};}
+ if(type==='rhyme'){const item=pick(RHYMES,rng);const others=shuffle(RHYMES.filter(r=>r!==item),rng).slice(0,2);return {type,word:item[0],icon:item[1],answer:item[2],options:shuffle([{label:item[2],icon:item[3]},...others.map(r=>({label:r[2],icon:r[3]}))],rng),prompt:`Was reimt sich auf ${item[0]}?`,hint:`Sprich ${item[0]} und die anderen Wörter. Welches Wort klingt am Ende ähnlich?`};}
  throw new Error('Unbekanntes Spiel');
 }
+export function createSession(type,stage,rng=Math.random,difficulty='explorer'){
+ const rounds=[],seen=new Set();for(let i=0;i<5;i++){let r,key;for(let attempt=0;attempt<40;attempt++){r=createRound(type,stage,i,rng,difficulty);key=JSON.stringify(r);if(!seen.has(key))break;}seen.add(key);rounds.push(r);}return rounds;
+}
+// Directions: north, east, south, west. All routes are generated with a known solution.
+export const DIRS=[[-1,0],[0,1],[1,0],[0,-1]];
+function direction(a,b,n){const dr=Math.floor(b/n)-Math.floor(a/n),dc=b%n-a%n;return DIRS.findIndex(([r,c])=>r===dr&&c===dc);}
+export function createPath(n,rng=Math.random,hard=false){
+ const start=(n-1)*n,end=n-1;let route=null;
+ for(let trial=0;trial<60&&!route;trial++){const path=[start],visited=new Set(path);function walk(at){if(at===end)return path.length>=(hard?n*2:n+2);if(path.length>=n*n-2)return false;const r=Math.floor(at/n),c=at%n;for(const d of shuffle([0,1,2,3],rng)){const [dr,dc]=DIRS[d],nr=r+dr,nc=c+dc,next=nr*n+nc;if(nr<0||nc<0||nr>=n||nc>=n||visited.has(next))continue;visited.add(next);path.push(next);if(walk(next))return true;path.pop();visited.delete(next);}return false;}if(walk(start))route=[...path];}
+ if(!route){route=Array.from({length:n},(_,i)=>start+i);for(let r=n-2;r>=0;r--)route.push(r*n+n-1);}
+ const pieces=Array.from({length:n*n},()=>null),solution={};route.forEach((cell,i)=>{const exits=[];if(i>0)exits.push(direction(cell,route[i-1],n));if(i<route.length-1)exits.push(direction(cell,route[i+1],n));solution[cell]=exits;pieces[cell]={exits:[...exits],rotation:i===0||i===route.length-1?0:int(0,3,rng),fixed:i===0||i===route.length-1};});
+ const stars=[1,2,3].map(i=>route[Math.floor((route.length-1)*i/4)]);
+ const puzzle={type:'path',size:n,start,end,route,pieces,solution,stars:[...new Set(stars)],options:[],prompt:'Drehe den Weg. Rette die Sterne!',hint:'Die goldenen Bahnen müssen sich berühren. Verbinde den Start mit dem Portal und sammle alle Sterne.'};if(tracePath(puzzle).success){const first=route.find(c=>!pieces[c].fixed);pieces[first].rotation=(pieces[first].rotation+1)%4;}return puzzle;
+}
+export function tracePath(round,rotations={}){const {size:n,start,end,pieces,stars}=round,visited=new Set(),path=[];let current=start,from=null;while(!visited.has(current)){visited.add(current);path.push(current);if(current===end)return {success:stars.every(s=>visited.has(s)),path,reason:stars.every(s=>visited.has(s))?'goal':'stars'};const p=pieces[current];if(!p)return {success:false,path,reason:'rock'};const exits=p.exits.map(d=>(d+(rotations[current]??p.rotation))%4);const nextDir=exits.find(d=>d!==from);if(nextDir===undefined)return {success:false,path,reason:'blocked'};const [dr,dc]=DIRS[nextDir],r=Math.floor(current/n)+dr,c=current%n+dc;if(r<0||c<0||r>=n||c>=n)return {success:false,path,reason:'edge'};const next=r*n+c,np=pieces[next];if(!np||!np.exits.map(d=>(d+(rotations[next]??np.rotation))%4).includes((nextDir+2)%4))return {success:false,path,reason:'gap'};from=(nextDir+2)%4;current=next;}return {success:false,path,reason:'loop'};}
 export function initialProgress(){return {sessions:0,stars:0,completed:{}};}
 export function completeGame(progress,type){return {...progress,sessions:progress.sessions+1,stars:progress.stars+1,completed:{...progress.completed,[type]:(progress.completed[type]||0)+1}};}

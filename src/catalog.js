@@ -1,11 +1,14 @@
-export const CATALOG = [
- {id:'count',title:'Zähl die Schätze',subject:'Mengen & Zahlen',description:'Entdecke, wie viele es sind.',skill:'Mengen strukturiert erfassen und abzählen',art:'<span class="art-number">1 2 3</span>',duration:'5 kleine Runden',order:1},
- {id:'sum',title:'Zusammen wird mehr',subject:'Erstes Rechnen',description:'Zwei Gruppen werden zu einer.',skill:'Addition als Zusammenfügen verstehen',art:'<span class="art-sum">2 + 3</span>',duration:'5 kleine Runden',order:2},
- {id:'pattern',title:'Was kommt danach?',subject:'Muster & Logik',description:'Finde das fehlende Puzzleteil.',skill:'Wiederholende Muster erkennen und fortsetzen',art:'<span class="art-pattern">● ◆ ●</span>',duration:'5 kleine Runden',order:3},
- {id:'syllable',title:'Wörter klatschen',subject:'Sprache & Hören',description:'Höre zu und klatsche die Silben.',skill:'Wörter in Sprechsilben gliedern',art:'<span class="art-language">Aa</span>',duration:'5 kleine Runden',order:4}
+export const CATALOG=[
+{id:'path',title:'Sternenwege',subject:'Logik & Raum',category:'Logik',description:'Drehen, vorausdenken und den Stern ins Portal lotsen.',skill:'Wege planen und räumliche Drehungen verstehen',icon:'🌀',art:'<span class="mini-route">╭━✦<br>╰━➜</span>',duration:'5 neue Rätsel',order:1},
+{id:'memory',title:'Funkel-Memory',subject:'Gedächtnis',category:'Denken',description:'Wo war der Fuchs? Entdecke die versteckten Paare.',skill:'Bildpositionen im Arbeitsgedächtnis halten',icon:'🦊',art:'<span class="mini-cards"><i>✦</i><i>🦊</i></span>',duration:'5 neue Rätsel',order:2},
+{id:'sum',title:'Schatz-Express',subject:'Mengen & Rechnen',category:'Zahlen',description:'Packe klug: Welche Pakete füllen deine Truhe?',skill:'Zahlzerlegung und Ergänzung handelnd erfahren',icon:'🎒',art:'<span class="mini-crate">📦<b>+ ✦</b></span>',duration:'5 neue Rätsel',order:3},
+{id:'count',title:'Schatzsucher',subject:'Mengen & Zahlen',category:'Zahlen',description:'Spüre die versteckten Schätze auf der Insel auf.',skill:'Mengen erkennen und kontrolliert abzählen',icon:'🔍',art:'<span class="mini-crate">🔍<b>✦ ✦</b></span>',duration:'5 neue Rätsel',order:4},
+{id:'pattern',title:'Geheimcode',subject:'Muster & Logik',category:'Logik',description:'Entschlüssle die Regel hinter den Zaubersteinen.',skill:'Wiederholende Regeln abstrahieren',icon:'💎',art:'<span class="gem-row">◆ ● ◆</span>',duration:'5 neue Rätsel',order:5},
+{id:'syllable',title:'Silben-Party',subject:'Sprache & Hören',category:'Sprache',description:'Klatsche Wörter und bringe die Sterne zum Tanzen.',skill:'Sprechsilben unterscheiden',icon:'👏',art:'<span class="mini-crate">👏<b>Ba-na-ne</b></span>',duration:'5 neue Rätsel',order:6},
+{id:'compare',title:'Schatz-Duell',subject:'Mengen vergleichen',category:'Zahlen',description:'Zwei Inseln voller Schätze. Wo sind mehr?',skill:'Mengen vergleichen und Gleichheit erkennen',icon:'⚖️',art:'<span class="mini-crate">⚖️<b>✦ ✦ ✦</b></span>',duration:'5 neue Rätsel',order:7},
+{id:'odd',title:'Aus der Reihe',subject:'Kategorien & Denken',category:'Denken',description:'Ein Gast hat sich verirrt. Findest du ihn?',skill:'Objekte nach übergeordneten Kategorien ordnen',icon:'🦋',art:'<span class="mini-crate">🦋<b>🍎 🐱 🍐</b></span>',duration:'5 neue Rätsel',order:8},
+{id:'sort',title:'Zahlentreppe',subject:'Reihenfolge',category:'Zahlen',description:'Baue eine Treppe von der kleinsten zur größten Zahl.',skill:'Zahlen ordnen und Größenbeziehungen nutzen',icon:'🪜',art:'<span class="mini-steps">▂ ▄ ▆</span>',duration:'5 neue Rätsel',order:9},
+{id:'rhyme',title:'Reim-Zauber',subject:'Sprache & Klang',category:'Sprache',description:'Haus und Maus: Welche Wörter klingen ähnlich?',skill:'Reimklänge unterscheiden',icon:'🏠',art:'<span class="mini-crate">🏠<b>♡ 🐭</b></span>',duration:'5 neue Rätsel',order:10},
+{id:'subtract',title:'Sternenflug',subject:'Wegnehmen',category:'Zahlen',description:'Ein paar Sterne fliegen weg. Was bleibt zurück?',skill:'Subtraktion an sichtbaren Veränderungen verstehen',icon:'🚀',art:'<span class="mini-crate">🚀<b>✦ ➜ ✧</b></span>',duration:'5 neue Rätsel',order:11}
 ];
-export const SOURCES = [
- ['Mathematik am Schulanfang · PIKAS / DZLM','https://pikas.dzlm.de/pikasfiles/uploads/upload/Material/unterricht_neu/schulanfang/um_schulanfang_karteimathematikamschulanfang.pdf'],
- ['LehrplanPLUS Mathematik 1/2','https://www.lehrplanplus.bayern.de/fachlehrplan/grundschule/1/mathematik'],
- ['LehrplanPLUS Deutsch 1/2','https://www.lehrplanplus.bayern.de/fachlehrplan/grundschule/1/deutsch']
-];
+export const SOURCES=[['Mathematik am Schulanfang · PIKAS / DZLM','https://pikas.dzlm.de/pikasfiles/uploads/upload/Material/unterricht_neu/schulanfang/um_schulanfang_karteimathematikamschulanfang.pdf'],['LehrplanPLUS Mathematik 1/2','https://www.lehrplanplus.bayern.de/fachlehrplan/grundschule/1/mathematik'],['LehrplanPLUS Deutsch 1/2','https://www.lehrplanplus.bayern.de/fachlehrplan/grundschule/1/deutsch']];
