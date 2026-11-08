@@ -1,0 +1,12 @@
+export const TYPES=['rail','picnic','bridge'];
+export const LEVELS={
+ rail:[{size:2,route:[0,1,3]},{size:3,route:[0,3,4,5,8]},{size:3,route:[0,1,4,3,6,7,8]},{size:3,route:[0,3,6,7,4,5,8]},{size:4,route:[0,1,5,6,10,11,15]},{size:4,route:[0,4,8,9,5,6,7,11,15]}],
+ picnic:[[2,3],[3,1,2],[4,2,3],[3,3,3],[5,2,4],[4,5,3]],
+ bridge:[{gaps:[3],pieces:[1,2,4]},{gaps:[4],pieces:[1,3,2]},{gaps:[5],pieces:[2,3,4]},{gaps:[3,4],pieces:[1,2,3]},{gaps:[5,4],pieces:[2,3,1]},{gaps:[6,5],pieces:[2,4,3,1]}]
+};
+export function level(type,index){const n=((index%6)+6)%6;if(type==='picnic')return {type,index:n,targets:[...LEVELS.picnic[n]]};if(type==='bridge')return {type,index:n,...structuredClone(LEVELS.bridge[n])};const {size,route}=LEVELS.rail[n];const dir=(a,b)=>b===a+1?1:b===a-1?3:b>a?2:0;const cells=Array.from({length:size*size},(_,i)=>({ports:i%2?[0,2]:[0,1],rotation:i%4}));route.forEach((cell,i)=>{cells[cell]={ports:[i?dir(cell,route[i-1]):3,i<route.length-1?dir(cell,route[i+1]):1],rotation:i===0||i===route.length-1?0:1+(i%3),fixed:i===0||i===route.length-1};});return {type,index:n,size,route,cells,start:route[0],end:route.at(-1),stars:route.slice(1,-1).filter((_,i)=>i%2===0)};}
+export function trace(l,rotations){let at=l.start,entry=3;const path=[];for(let k=0;k<=l.cells.length;k++){if(path.includes(at))return {ok:false,path};path.push(at);const c=l.cells[at],ports=c.ports.map(d=>(d+(rotations[at]??c.rotation))%4);if(!ports.includes(entry))return {ok:false,path};const out=ports.find(d=>d!==entry);if(at===l.end)return {ok:out===1&&l.stars.every(s=>path.includes(s)),path};const x=at%l.size,y=Math.floor(at/l.size),nx=x+[0,1,0,-1][out],ny=y+[-1,0,1,0][out];if(nx<0||ny<0||nx>=l.size||ny>=l.size)return {ok:false,path};at=ny*l.size+nx;entry=(out+2)%4;}return {ok:false,path};}
+export function bridgeOK(l,placed){return l.gaps.every((n,i)=>(placed[i]||[]).reduce((a,b)=>a+b,0)===n);}
+export function picnicOK(l,counts){return l.targets.every((n,i)=>counts[i]===n);}
+export function freshProgress(p={}){return {found:Array.isArray(p.found)?p.found.filter(n=>[0,1,2].includes(n)):[],together:!!p.together,seen:p.seen||{},completed:p.completed||{},sessions:Number.isInteger(p.sessions)?p.sessions:0,decor:['flowers','crystals','flags'].includes(p.decor)?p.decor:'flowers',active:p.active||null};}
+export function itinerary(progress,type){if(type)return Array.from({length:3},(_,i)=>({type,index:((progress.completed[type]||0)+i)%6}));return TYPES.map((type,i)=>({type,index:(progress.completed[type]||0)%6}));}
