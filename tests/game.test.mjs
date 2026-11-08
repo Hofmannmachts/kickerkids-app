@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createRound, completeGame, initialProgress} from '../src/game.js';
+for(const stage of ['preschool','school'])for(const type of ['count','sum','pattern','syllable'])test(`${stage}: ${type} has valid, unique options and matching answers`,()=>{for(let index=0;index<5;index++){const r=createRound(type,stage,index,()=>.37);assert.equal(r.options.length,3);assert.equal(new Set(r.options).size,3);assert.ok(r.options.includes(r.answer));if(type==='sum'){assert.equal(r.answer,r.a+r.b);assert.ok(r.answer<=(stage==='school'?20:5));}if(type==='syllable')assert.equal(r.parts.split('-').length,r.answer);if(type==='count')assert.equal(r.amount,r.answer);if(type==='pattern'){const period=stage==='school'&&index>1?3:2;assert.equal(r.answer,r.sequence[r.sequence.length%period]);}}});
+test('Completion awards one persistent star per finished session without mutating prior state',()=>{const before=initialProgress();const after=completeGame(before,'count');assert.equal(before.stars,0);assert.deepEqual(after,{sessions:1,stars:1,completed:{count:1}});assert.deepEqual(completeGame(after,'count'),{sessions:2,stars:2,completed:{count:2}});});
+test('Unsupported games fail explicitly',()=>assert.throws(()=>createRound('unknown','school',0)));
