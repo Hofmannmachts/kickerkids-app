@@ -1,7 +1,7 @@
 import { VOICE_CLIPS } from './voice-clips.js';
 let activeAudio=null,utterance=null;
 export function stopVoice(){if(activeAudio){activeAudio.pause();activeAudio=null;}window.speechSynthesis?.cancel();utterance=null;}
-export function voiceInfo(){return Object.keys(VOICE_CLIPS).length?'Produzierte Sprachaufnahmen verfügbar':'Sprachaufnahmen in Vorbereitung · optionale Gerätestimme';}
+export function voiceInfo(){return Object.keys(VOICE_CLIPS).length?'Produzierte Sprachaufnahmen verfügbar':'Nele · natürliche HeyGen-Gruppenanleitungen. Einzelaufgaben: optionale Gerätestimme';}
 export async function playVoice(text,{enabled=false,explicit=false}={}){
  if(!enabled&&!explicit)return;
  stopVoice();

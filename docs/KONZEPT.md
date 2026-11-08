@@ -1,4 +1,4 @@
-# KickerKids – Abenteuer-Version 0.3
+# KickerKids – Spielwelt-Version 0.4
 
 Stand: 8. November 2026. Dieser Plan ersetzt die Preis- und Umfangsentscheidungen der Version 0.2. Das frühere Konzept bleibt als Archiv erhalten.
 
@@ -21,7 +21,7 @@ Die folgenden Angaben stammen aus offiziellen Produktseiten bzw. Entwicklerbesch
 
 Quellen: [ZeptoLab](https://www.zeptolab.com/games/cut-the-rope-remastered), [LogicLike](https://apps.apple.com/ch/app/logiclike-kinder-lernspiele-2/id1565113819), [Funny Food](https://apps.apple.com/ch/app/kinder-lernspiele-vorschule/id1447377766), [Bimi Boo](https://apps.apple.com/ch/app/spiele-f%C3%BCr-kinder-lernspiele/id1037749621).
 
-Es werden keine Figuren, Sounds, Screenshots oder Original-Level dieser Spiele als eigene Assets verwendet. Das Remastered-Produkt wurde visuell auf der offiziellen Seite angesehen. KickerKids 0.3 ist eine eigenständige 2D/SVG-Webfassung; es ist noch kein vollwertiges 3D-Physikspiel mit vergleichbarem Produktionsumfang.
+Es werden keine Figuren, Sounds, Screenshots oder Original-Level dieser Spiele als eigene Assets verwendet. Das Remastered-Produkt wurde visuell auf der offiziellen Seite angesehen. KickerKids 0.4 verwendet illustrierte Spielwelten und ein tatsächlich räumliches, drehbares Figurenmodell. Die vorhandenen Lernspiele sind noch keine 3D-Physikspiele mit vergleichbarem Produktionsumfang.
 
 ## Elf tatsächlich implementierte Spielarten
 
@@ -59,23 +59,33 @@ Bereits umgesetzt und lokal gespeichert:
 - Vorschau in Garderobe, Profil und Abenteuerwelt.
 - Kein Bezahlen für einzelne Körpermerkmale; im Test alle Optionen zugänglich.
 
-Später möglich: weitere Trikotmuster, Schuhe, Haarfarben, Zauberhüte, Begleittiere und ausschließlich durch Spielen verdiente kosmetische Erinnerungsstücke. Keine zufälligen Bezahlpakete. Welt und Figur werden nicht an ein erhobenes Geschlecht gebunden.
+Weitere mögliche Erweiterungen: Trikotmuster, Rollschuhe, größere Körpervariationen und zusätzliche Begleittiere und ausschließlich durch Spielen verdiente kosmetische Erinnerungsstücke. Keine zufälligen Bezahlpakete. Welt und Figur werden nicht an ein erhobenes Geschlecht gebunden.
 
-## Stimme: ehrlicher Stand und Lösung
+## Stimme und einmalige Gruppeneinführung
 
-Die ursprüngliche Gerätestimme ist je nach Browser/OS unterschiedlich und erfüllt den gewünschten Qualitätsanspruch nicht zuverlässig. Ziel ist eine feste, freundlich-natürliche deutsche Sprecherstimme mit kurzen, redaktionell geprüften Aufnahmen.
+HeyGen ist nutzbar. Eine deutsche Aufnahme mit **Nele – Friendly & Natural**, Standard-Engine „orca“, Sprechtempo 0,95 wurde am 8. November 2026 erzeugt. Der Master umfasst 61,05 Sekunden. Aus den bewusst gesetzten Sprechpausen wurden fünf Gruppenclips exportiert und in der App eingebunden: Wege, Memory, Zahlen, Sprache und Knobeln.
 
-HeyGen wurde für diese Anfrage erfolgreich verbunden. In der verfügbaren Befehlsliste dieser Sitzung wurden jedoch keine HeyGen-Generierungs- oder Stimmenauswahlfunktionen bereitgestellt. Daher wurden **noch keine HeyGen-Audios erzeugt oder angehört**. Es ist keine erneute Installation erforderlich. Die konkrete Sprachproduktion bleibt offen, bis die Sprachfunktion in einer Sitzung verfügbar ist.
+Beim ersten Start eines Spiels erscheint die passende kurze Erklärung mit drei Schritten und Audiowiedergabe. Nach „Losspielen“ wird die Gruppe lokal als erklärt gespeichert. Weitere Spiele derselben Gruppe überspringen den Dialog, auch nach Neuladen. Über „Anleitung“ lässt sich die Erklärung freiwillig erneut öffnen. Das Löschen des Profils setzt auch diese Markierungen zurück. Die Hör-/Einführungseinstellung gilt pro lokalem Profil und Browser.
 
-Implementiert: getrenntes Audio-Modul `src/voice.js` und Text-zu-Datei-Manifest `src/voice-clips.js`. Fertige Aufnahmen werden lokal vom selben Host abgespielt; die Browserstimme ist derzeit lediglich der optionale Fallback. Sie wurde hinsichtlich deutscher Stimmenauswahl und Sprechtempo verbessert, aber nicht als neue realistische Studiostimme ausgegeben.
+Die Zahlen-Gruppe umfasst Zählen, Pakete, Mengenvergleich und Wegnehmen; die Sprach-Gruppe umfasst Silben und Reime. Es wird nicht bei jeder Aufgabe erneut eine lange Einführung gesprochen. Einzelne dynamische Aufgaben und Wort-Hörbuttons verwenden derzeit weiterhin die optionale Gerätestimme, solange dafür keine eigene geprüfte Aufnahme im Manifest liegt.
 
-Die eigentliche Produktionsvorgabe steht in [AUDIO.md](AUDIO.md). ElevenLabs ist eine mögliche spezialisierte API-Alternative mit steuerbarer mehrsprachiger Spracherzeugung; ein separat installierbarer ElevenLabs-Eintrag wurde im verfügbaren Verzeichnis nicht gefunden. [Offizielle ElevenLabs-Dokumentation](https://elevenlabs.io/docs/overview/capabilities/text-to-speech)
+Die Audioausgabe des Wege-Clips wurde im Browser gestartet: 14,38 Sekunden, Wiedergabe läuft, kein Medienfehler. Die Dateien wurden technisch als gültige MP3-Dateien geprüft. Die subjektive Eignung der Stimme und Aussprache soll der Betreiber bzw. eine pädagogische Hörprüfung bestätigen. Kein Voice-Cloning und keine Übermittlung von Kindernamen oder Kinderaufnahmen.
 
-Vor Aktivierung: deutsche Aussprache anhören, Zahlen/Silben prüfen, Dateien normalisieren, Nutzungsrechte klären. Sprachlernspiele benötigen besonders sorgfältige Hörprüfung. Bis dahin Vorschulkinder bei Sprachspielen begleiten. Kein Kindername oder Mikrofoninhalt muss zur Produktion generischer Spieltexte an einen Anbieter gesendet werden.
+[Produktionsdetails](AUDIO.md).
+
+## Neue Oberfläche und freiere Figur
+
+Vier Hauptbereiche: **Pfad, Spielen, Kabine, Album**. Eine große Starttaste führt zur nächsten noch nicht entdeckten Mission. Vier große Kartenstationen öffnen die Lernbereiche. Die Fußballwelt zeigt Stadien und Trainingsplätze, die Zauberwelt Schlösser und Kristallgärten. Beide verwenden eigene, aus der Nutzervorlage stilistisch abgeleitete 3D-Illustrationen. Die Referenzdatei selbst wird nicht veröffentlicht.
+
+Die Namens-/Weltauswahl wurde vereinfacht; Lernstufe und Schwierigkeit liegen in einem optionalen Elternabschnitt. Die Kabine bietet drei überschaubare Reiter: Look, Gesicht und „Verrückt!“. Die Vorschau bleibt beim Scrollen sichtbar.
+
+Die Figur ist ein echtes Drei-D-Modell aus eigener Geometrie mit Three.js 0.187.0: Kopf, Körper, Haare, Gesicht, Kleidung, Nummer, Beleuchtung, Podest und Raum. Auf geeigneten Geräten WebGL, ansonsten Projektion derselben räumlichen Geometrie über SVGRenderer. Der Testbrowser hatte WebGL deaktiviert; die alternative 3D-Projektion und ihre veränderte Ansicht nach Drehung wurden geprüft. Der WebGL-Pfad benötigt noch eine Prüfung auf echten Geräten.
+
+Bereits kombinierbar: freie Outfit-/Haar-/Hautfarben, Trikot/Zauberkleid/Roboter, Nummer, Gesicht, Frisur, Krone, Einhornhorn, Astronautenhelm, Drachenhörner, Flügel, Jetpack, Umhang, Sternbrille, Visier und Begleiter (Drache/Roboter/Einhorn). Eine Überraschungstaste erzeugt neue Kombinationen. „Frei kombinierbar“ bezeichnet die implementierten Bausteine, nicht unendlich viele fertige Modelle oder beliebige Texteingabe zur Figurenerzeugung.
 
 ## Technik
 
-Bestehende modulare HTML/JS/SVG-Architektur weiterentwickelt. Kein unnötiger Austausch des Projekts. Taktile SVG-Spielteile, Schatten, Licht, animierte Sternenroute und überarbeitete Inselgrafik. Semantische Tasten bleiben mit Tastatur bedienbar. Auf Smartphones untere Navigation mit Figurenbereich, scrollbare Inhalte und anpassbare Spielflächen. Reduzierte Bewegung und abschaltbare Effekte bleiben erhalten.
+Bestehende modulare HTML/JS/SVG-Architektur weiterentwickelt. Bestehende Spielregeln und lokale Fortschrittsdaten bleiben erhalten. Taktile SVG-Spielteile, Schatten, Licht, animierte Sternenroute und überarbeitete Inselgrafik. Semantische Tasten bleiben mit Tastatur bedienbar. Auf Smartphones untere Navigation mit Figurenbereich, scrollbare Inhalte und anpassbare Spielflächen. Reduzierte Bewegung und abschaltbare Effekte bleiben erhalten.
 
 Supabase liefert elf veröffentlichte Katalogeinträge. Die erlaubten IDs wurden durch die Migration `expand_adventure_catalog` erweitert; Katalogtexte aktualisiert. RLS und ausschließlich lesende Clientberechtigungen bleiben bestehen. Kinderprofil und Fortschritt werden weiterhin lokal gehalten. Frühere Fortschritte mit den IDs count/sum/pattern/syllable bleiben erhalten.
 
@@ -100,7 +110,7 @@ Keine Karten- oder Kontodaten werden selbst verarbeitet. Ein Backend zur Prüfun
 
 | Priorität | Inhalt | Abnahme |
 |---|---|---|
-| 1 | echte deutsche Lumi-Aufnahmen | zwei Stimmen vergleichen, Aussprache/Dateien prüfen, Manifest befüllen |
+| 1 | Hörprüfung der erzeugten Nele-Einführungen | Aussprache anhören und bestätigen, Einzelwort-Clips ergänzen |
 | 2 | Familien-Praxistest auf iPhone/Android | Einstieg, Fingerbedienung, Rätselklarheit, Effekte und Schwierigkeit beobachten |
 | 3 | erste wirkliche Physikszene | eigene Mechanik mit Rampen, Schaltern und beweglichem Ball; planbare Lösung und Wiederholen |
 | 4 | differenzierte Inselkampagne | kleine Missionen führen Mechaniken ein; Mischrätsel kombinieren zwei Kompetenzen |
@@ -108,3 +118,12 @@ Keine Karten- oder Kontodaten werden selbst verarbeitet. Ein Backend zur Prüfun
 | 6 | Elternkonten und PayPal-Sandbox | Zugriffsisolation, Erfolg/Abbruch/Kündigung und Erstattungen prüfen |
 
 Pädagogische Orientierung bleibt [PIKAS Schulanfang](https://pikas.dzlm.de/pikasfiles/uploads/upload/Material/unterricht_neu/schulanfang/um_schulanfang_karteimathematikamschulanfang.pdf), [Mathematik LehrplanPLUS 1/2](https://www.lehrplanplus.bayern.de/fachlehrplan/grundschule/1/mathematik) und [Deutsch LehrplanPLUS 1/2](https://www.lehrplanplus.bayern.de/fachlehrplan/grundschule/1/deutsch). Die Klassen-1/2-Quelle ist kein verbindlicher Vorschullehrplan. Wirkung, Spaß und Bedienbarkeit sind erst durch echte begleitete Tests zu beurteilen.
+
+## Weitere verrückte Spielideen – noch nicht implementiert
+
+- **Schwebende Tor-Arena / Sternen-Ringe:** Rampen und Schalter so einstellen, dass Ball oder Zauberkugel ein Ziel erreicht; Mengen und räumliche Beziehungen ergeben sich aus der Handlung.
+- **Jetpack-Pass / Wolkenritt:** Eine kurze Folge von Bewegungsbefehlen planen. Erst überlegen, dann fliegt die Figur die Befehle ab.
+- **Mannschaftscamp / Zaubergarten:** Durch gelöste Aufgaben eine eigene kleine Welt gestalten. Bauplätze, Formen, Größen und Wege werden kombiniert.
+- **Riesen-Trikot / Verwandlungskleid:** Ein Kleidungsstück reagiert auf gelöste Muster mit Farben und Materialien. Reine kosmetische Belohnung, kein Kaufdruck.
+- **Drachen-Taktik:** Zwei Figuren arbeiten zusammen; ein Schalter öffnet dem anderen den Weg. Gemeinsamkeit und Vorausplanung statt bloßer Rechenabfrage.
+- **Comic-Missionen:** Eine kleine Geschichte verknüpft drei verschiedene Rätseltypen und eine Entscheidung; Fußball und Magie erhalten gleichwertige eigene Geschichten.

@@ -1,4 +1,4 @@
-# kickerkids-app · Abenteuer-Version 0.3
+# kickerkids-app · Spielwelt-Version 0.4
 
 Smartphone-taugliche Lernspiel-Webanwendung für Vorschule und Klasse 1.
 
@@ -8,13 +8,14 @@ Smartphone-taugliche Lernspiel-Webanwendung für Vorschule und Klasse 1.
 - Eigene Figur: Trikot/Kleid, Farben, Nummer, Gesicht, Frisur und Hautton; lokal gespeichert.
 - Supabase-Katalog, statischer Netlify-Build, keine Browser-Abhängigkeiten.
 - Geplantes Abo **3,99 €/Monat**, Zahlungen im Test deaktiviert.
-- Audio-Modul für natürliche vorproduzierte Sprachaufnahmen vorbereitet; HeyGen verbunden, aber noch keine erzeugten Clips vorhanden. Optionale Gerätestimme ist nur der Fallback.
+- Fünf erzeugte HeyGen-Einführungen mit Nele; automatisch nur einmal je Gruppe. Einzelaufgaben bei Bedarf mit optionaler Gerätestimme.
 
 ## Lokal starten
 
-Node.js >= 20, keine zusätzlichen npm-Pakete nötig:
+Node.js >= 20, Three.js ist als exakte npm-Abhängigkeit enthalten:
 
 ```sh
+npm ci
 npm test
 npm run build
 npm run dev
@@ -33,3 +34,5 @@ http://localhost:3000 öffnen. Nach Änderungen erneut bauen. Netlify baut über
 Live-Test: https://kickerkids.netlify.app/
 
 Kein fertiger vollständiger Grundschullehrplan, kein Lernstandsdiagnostikum, keine aktive Zahlung und noch keine echte 3D-Physik-Engine. Der Originalprototyp ist separat archiviert und nicht Teil des Web-Builds.
+
+Version 0.4: vier Hauptbereiche, zwei neu illustrierte Welten und eine drehbare 3D-Kabine mit freien Farben und Fantasiebausteinen. WebGL auf geeigneten Geräten, 3D-SVG-Projektion als Alternative. Der WebGL-Pfad ist noch auf echten Geräten zu prüfen.
